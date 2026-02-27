@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.teleops.PandaTelemetryPacket
 class ShootBlueWall : OpMode() {
 
     val beginPose = Pose2d(63.0, -15.0, Math.PI) // was x = 30.5, y = 66
+    val shootPose = Pose2d(-15.0,-15.0,-Math.PI/4)
     lateinit var shooter: Shooter
     lateinit var drive: IHDrive
     lateinit var ramp: Ramp
@@ -35,8 +36,7 @@ class ShootBlueWall : OpMode() {
                  .setTangent(-3 * Math.PI/4)
                  .splineToSplineHeading(
                      Pose2d(Vector2d(-15.0, -15.0), -Math.PI / 4),
-                     Math.PI
-                 )
+                     Math.PI)
                  .build(),
              ramp.collect(),
              drive.actionBuilder(drive.localizer.pose)
@@ -75,14 +75,14 @@ class ShootBlueWall : OpMode() {
              shooter.stop(),
              shooter.stopFeeding(),
              collection.stop(),
+             drive.actionBuilder(shootPose)
+                 .setTangent(0.0)
+                 .splineToSplineHeading(
+                     Pose2d(Vector2d(24.0, -15.0), -Math.PI / 4),
+                         0.0)
+                 .build(),
 
-                 drive.actionBuilder(beginPose)
-                     .setTangent(-3 * Math.PI/4)
-                     .splineToSplineHeading(
-                         Pose2d(Vector2d(12.0, -24.0), -Math.PI / 4),
-                         Math.PI
-                     )
-                     .build(),
+             ramp.toZero(),
 
 
 

@@ -24,7 +24,7 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-@TeleOp(name = "CompetitionTeleop")
+@TeleOp
 class RedCompetitionTeleop : OpMode() {
     private lateinit var drive: IHDrive
     private lateinit var g1: PandaGamepad
@@ -55,7 +55,7 @@ class RedCompetitionTeleop : OpMode() {
         shooter = Shooter(hardwareMap)
         ramp = Ramp(hardwareMap)
         collection = Collection(hardwareMap)
-        camera = Camera(hardwareMap)
+        //camera = Camera(hardwareMap)
         drive.localizer.pose = LocationShare.robotLocation
     }
 
@@ -86,11 +86,11 @@ class RedCompetitionTeleop : OpMode() {
         leftTriggerMax.update(gamepad2.left_trigger.toDouble())
 
         //print camera data
-        telemetry.addData("resultSeen", camera.updateLL())
-        telemetry.addData("Botpose", camera.LLresults.botpose)
-        telemetry.addData("tx", camera.LLresults.tx)
-        telemetry.addData("ty", camera.LLresults.ty)
-        telemetry.addData("ta", camera.LLresults.ta)
+        //telemetry.addData("resultSeen", camera.updateLL())
+        //telemetry.addData("Botpose", camera.LLresults.botpose)
+        //telemetry.addData("tx", camera.LLresults.tx)
+        //telemetry.addData("ty", camera.LLresults.ty)
+        //telemetry.addData("ta", camera.LLresults.ta)
 
         //run and update actions
         val packet = PandaTelemetryPacket(telemetry)
@@ -200,6 +200,15 @@ class RedCompetitionTeleop : OpMode() {
                         ((gamepad1.left_trigger - gamepad1.right_trigger) * 1 / 2 * slowSpeed).toDouble()
                     )
                 )
+            } else if (g1.y.isHeld()) {
+                drive.setDrivePowers(
+                    PoseVelocity2d(
+                        heading.inverse().times(input),    //Coach Ethan added slow 1/19
+                        ((gamepad1.left_trigger - gamepad1.right_trigger) * 2).toDouble()
+                    )
+                )
+
+
             } else {
                 drive.setDrivePowers(
                     PoseVelocity2d(
@@ -211,6 +220,7 @@ class RedCompetitionTeleop : OpMode() {
         }
 
         if (g1.b.justPressed()) headingOffset = rawHeading.toDouble() - driverHeading
+
 
 
 

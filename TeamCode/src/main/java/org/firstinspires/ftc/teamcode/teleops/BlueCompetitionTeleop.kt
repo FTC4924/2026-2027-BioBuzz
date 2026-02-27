@@ -25,7 +25,7 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-@TeleOp(name = "CompetitionTeleop")
+@TeleOp
 class BlueCompetitionTeleop : OpMode() {
     private lateinit var drive: IHDrive
     private lateinit var g1: PandaGamepad
@@ -194,6 +194,14 @@ class BlueCompetitionTeleop : OpMode() {
                         ((gamepad1.left_trigger - gamepad1.right_trigger) * 1 / 2 * slowSpeed).toDouble()
                     )
                 )
+            } else if (g1.y.isHeld()) {
+                drive.setDrivePowers(
+                    PoseVelocity2d(
+                        heading.inverse().times(input),    //Coach Ethan added slow 1/19
+                        ((gamepad1.left_trigger - gamepad1.right_trigger) * 2).toDouble()
+                    )
+                )
+
             } else {
                 drive.setDrivePowers(
                     PoseVelocity2d(
@@ -202,10 +210,11 @@ class BlueCompetitionTeleop : OpMode() {
                     )
                 )
             }
+
+
+            if (g1.b.justPressed()) headingOffset = rawHeading.toDouble() - driverHeading
+
         }
-
-        if (g1.b.justPressed()) headingOffset = rawHeading.toDouble() - driverHeading
-
 
 
         /* driver 2 */

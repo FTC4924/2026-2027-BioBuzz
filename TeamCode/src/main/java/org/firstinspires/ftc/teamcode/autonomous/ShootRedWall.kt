@@ -18,6 +18,7 @@ import kotlin.math.PI
 class ShootRedWall : OpMode() {
 
     val beginPose = Pose2d(63.0, 15.0, Math.PI) // was x = 30.5, y = 66
+    val shootPose = Pose2d(-15.0,15.0,Math.toRadians(-140.0))
     lateinit var shooter: Shooter
     lateinit var drive: IHDrive
     lateinit var ramp: Ramp
@@ -36,8 +37,7 @@ class ShootRedWall : OpMode() {
                  .setTangent(3 * Math.PI/4)
                  .splineToSplineHeading(
                      Pose2d(Vector2d(-15.0, 15.0), Math.toRadians(-140.0)),
-                     Math.PI
-                 )
+                     Math.PI)
                  .build(),
              ramp.collect(),
              drive.actionBuilder(drive.localizer.pose)
@@ -76,13 +76,13 @@ class ShootRedWall : OpMode() {
              shooter.stop(),
              shooter.stopFeeding(),
              collection.stop(),
-             drive.actionBuilder(beginPose)
-                 .setTangent(-3 * Math.PI/4)
+             drive.actionBuilder(shootPose)
+                 .setTangent(0.0)
                  .splineToSplineHeading(
-                     Pose2d(Vector2d(12.0, 24.0), -Math.PI / 4),
-                     Math.PI
-                 )
+                     Pose2d(Vector2d(24.0, 15.0), Math.toRadians(-140.0)),
+                     0.0)
                  .build(),
+             ramp.toZero(),
 
              //drive.actionBuilder(drive.localizer.pose)
              //    .waitSeconds(1.0)
