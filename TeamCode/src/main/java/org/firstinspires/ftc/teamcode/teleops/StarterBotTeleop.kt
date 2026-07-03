@@ -88,14 +88,14 @@ class StarterBotTeleop : OpMode() {
         drive.updatePoseEstimate()
 
         /* driver 1 */
-        val driverHeading = PI/2
+        val driverHeading = 0.0
         val rawHeading = drive.localizer.pose.heading
         val heading: Rotation2d = Rotation2d.fromDouble(rawHeading.toDouble() - headingOffset - driverHeading)
         val slowSpeed = 0.8 //Normally go about 80% of our fastest speed
 
         val leftStick1 = Vector2d(
-            g1.leftStickY.component,
-            -g1.leftStickX.component
+            g1.leftStickX.component,
+            -g1.leftStickY.component
         )
 
 
