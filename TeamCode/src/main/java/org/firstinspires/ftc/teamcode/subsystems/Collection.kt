@@ -22,7 +22,7 @@ class Collection(hardwareMap: HardwareMap) {
 
     var collectionState = CollectionState.Stopped
 
-    private val collection = hardwareMap.get(CRServo::class.java, "collection")
+    private val collection = hardwareMap.get(DcMotorSimple::class.java, "collection")
 
 
     var collectionPower = 0.0  //W hen program/class is initialized, assume start at 0
