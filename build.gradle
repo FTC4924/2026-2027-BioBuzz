@@ -11,6 +11,20 @@ buildscript {
     }
 }
 
+buildscript {
+
+    repositories {
+        mavenCentral()
+        google()
+    }
+
+    dependencies {
+        //noinspection AndroidGradlePluginVersion
+        classpath 'com.android.tools.build:gradle:7.2.0'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0'
+    }
+}
+
 plugins {
     // Note for FTC Teams: Do not modify this yourself.
     id 'com.android.application' version '8.13.2' apply false
@@ -30,16 +44,3 @@ repositories {
     mavenCentral()
 }
 
-buildscript {
-
-    repositories {
-        mavenCentral()
-        google()
-    }
-
-    dependencies {
-        //noinspection AndroidGradlePluginVersion
-        classpath 'com.android.tools.build:gradle:7.2.0'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0'
-    }
-}

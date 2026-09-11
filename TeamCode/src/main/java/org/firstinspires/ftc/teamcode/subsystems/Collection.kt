@@ -22,13 +22,14 @@ class Collection(hardwareMap: HardwareMap) {
 
     var collectionState = CollectionState.Stopped
 
-    private val collection = hardwareMap.get(DcMotorSimple::class.java, "collection")
-
+    private val collectMotor = hardwareMap.get(DcMotorSimple::class.java, "collection")
+    private val collectServoLeft = hardwareMap.get(CRServo::class.java, "collectLeft")
+    private val collectServoRight = hardwareMap.get(CRServo::class.java, "collectRight")
 
     var collectionPower = 0.0  //W hen program/class is initialized, assume start at 0
 
     init {
-        collection.direction = DcMotorSimple.Direction.REVERSE
+        collectMotor.direction = DcMotorSimple.Direction.REVERSE
     }
 
 
@@ -39,7 +40,9 @@ class Collection(hardwareMap: HardwareMap) {
         override fun run(packet: TelemetryPacket): Boolean {
             if (!initialized) {
                 collectionPower = state.power.toDouble()
-                collection.power = collectionPower.toDouble()
+                collectMotor.power = collectionPower
+                collectServoLeft.power = collectionPower
+                collectServoRight.power = collectionPower
                 collectionState = state
                 initialized = true
             }

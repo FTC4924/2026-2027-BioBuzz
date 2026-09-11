@@ -70,9 +70,24 @@ class StarterBotTeleop : OpMode() {
         }
         runningActions = newActions
 
+
+
+        //update drive Pose
+        drive.updatePoseEstimate()
+
+        /* driver 1 */
+        val driverHeading = 90.0
+        val rawHeading = drive.localizer.pose.heading
+        val heading: Rotation2d = Rotation2d.fromDouble(rawHeading.toDouble() - headingOffset - driverHeading)
+        val slowSpeed = 0.8 //Normally go about 80% of our fastest speed
+
         telemetry.addData("x", robotPose.position.x)
         telemetry.addData("y", robotPose.position.y)
         telemetry.addData("heading (deg)", Math.toDegrees(robotPose.heading.toDouble()))
+        telemetry.addData("raw", rawHeading.toDouble())
+        telemetry.addData("driverheading", driverHeading)
+        telemetry.addData("offset", headingOffset)
+
 
         packet.field().setRotation(Math.PI / 2)
         packet.fieldOverlay().setRotation(-Math.PI / 2)
@@ -84,18 +99,9 @@ class StarterBotTeleop : OpMode() {
 
         dash.sendTelemetryPacket(packet)
 
-        //update drive Pose
-        drive.updatePoseEstimate()
-
-        /* driver 1 */
-        val driverHeading = 90.0
-        val rawHeading = drive.localizer.pose.heading
-        val heading: Rotation2d = Rotation2d.fromDouble(rawHeading.toDouble() - headingOffset - driverHeading)
-        val slowSpeed = 0.8 //Normally go about 80% of our fastest speed
-
         val leftStick1 = Vector2d(
-            g1.leftStickX.component,
-            -g1.leftStickY.component
+            g1.leftStickY.component,
+            -g1.leftStickX.component
         )
 
 
@@ -119,15 +125,13 @@ class StarterBotTeleop : OpMode() {
         if (g1.b.justPressed()) headingOffset = rawHeading.toDouble() - driverHeading
 
 
-
-
         /* driver 2 */
-        if (g2.x.justPressed()) {
+        if (g1.x.justPressed()) {
             if (collection.collectionState == CollectionState.Stopped) runningActions.add(collection.collectIn())
             else if (collection.collectionState == CollectionState.Backward) runningActions.add(collection.collectIn())
             else runningActions.add(collection.stop())
         }
-        if (g2.y.justPressed()) {
+        if (g1.y.justPressed()) {
             if (collection.collectionState == CollectionState.Stopped) runningActions.add(collection.spitOut())
             else if (collection.collectionState == CollectionState.Forward) runningActions.add(collection.spitOut())
             else runningActions.add(collection.stop())
