@@ -42,7 +42,7 @@ class Collection(hardwareMap: HardwareMap) {
                 collectionPower = state.power.toDouble()
                 collectMotor.power = collectionPower
                 collectServoLeft.power = collectionPower
-                collectServoRight.power = collectionPower
+                collectServoRight.power = -collectionPower
                 collectionState = state
                 initialized = true
             }
