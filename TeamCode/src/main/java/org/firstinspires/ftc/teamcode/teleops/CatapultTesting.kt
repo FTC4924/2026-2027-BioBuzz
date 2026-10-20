@@ -1,18 +1,10 @@
 package org.firstinspires.ftc.teamcode.teleops
 
-import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.roadrunner.Action
-import com.acmerobotics.roadrunner.PoseVelocity2d
-import com.acmerobotics.roadrunner.Rotation2d
-import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.LocationShare
-import org.firstinspires.ftc.teamcode.roadrunner.Drawing
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.Catapult
-import org.firstinspires.ftc.teamcode.subsystems.Collection
-import org.firstinspires.ftc.teamcode.subsystems.Collection.CollectionState
 
 @TeleOp
 class CatapultTesting : OpMode() {
@@ -66,7 +58,6 @@ class CatapultTesting : OpMode() {
 
         telemetry.addData("seconds/loop", deltaTime)
 
-
         if (g1.a.justPressed()) {
             runningActions.add(catapult.Light())//5 Rotations
         }
@@ -77,14 +68,15 @@ class CatapultTesting : OpMode() {
             runningActions.add(catapult.Heavy())//7 Rotations
         }
         if (g1.b.justPressed()){
-            runningActions.add(catapult.SuperUltraPower())//9 Rotations
+            runningActions.add(catapult.SuperUltraPower())//7.5 Rotations
         }
         if (g1.dpadDown.justPressed()) {
             runningActions.add(catapult.Release())
         }
         if (g1.leftTrigger.isActive() or g1.rightTrigger.isActive()) {
             val trigger = gamepad1.left_trigger - gamepad1.right_trigger
-            runningActions.add(catapult.Manual(trigger.toDouble()))
+            runningActions.add(catapult.manual(trigger.toDouble() * deltaTime))
+            // The "deltaTime" is needed above to stop the motor after you let go of triggers
         }
     }
 
