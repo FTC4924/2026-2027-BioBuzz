@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleops
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.roadrunner.Action
+import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.PoseVelocity2d
 import com.acmerobotics.roadrunner.Rotation2d
 import com.acmerobotics.roadrunner.Vector2d
@@ -26,6 +27,7 @@ class StarterBotTeleop : OpMode() {
     private val dash: FtcDashboard = FtcDashboard.getInstance()
     private var runningActions: MutableList<Action> = ArrayList()
     private var lastTime: Double = 0.0
+    private lateinit var lastHeading: Rotation2d
 
 
     override fun init() {
@@ -33,6 +35,7 @@ class StarterBotTeleop : OpMode() {
         g1 = PandaGamepad(gamepad1)
         g2 = PandaGamepad(gamepad2)
         collection = Collection(hardwareMap)
+        lastHeading = drive.localizer.pose.heading
     }
 
     override fun start() {
@@ -51,7 +54,6 @@ class StarterBotTeleop : OpMode() {
 
         //update delta time
         val deltaTime = getDeltaTime()
-        //telemetry.addData("seconds/loop", deltaTime)
 
         //update gamepad values
         g1.update()
@@ -70,25 +72,23 @@ class StarterBotTeleop : OpMode() {
         }
         runningActions = newActions
 
-
-
-        //update drive Pose
-        drive.updatePoseEstimate()
-
-        /* driver 1 */
-        val driverHeading = 90.0
-        val rawHeading = drive.localizer.pose.heading
-        val heading: Rotation2d = Rotation2d.fromDouble(rawHeading.toDouble() - headingOffset - driverHeading)
-        val slowSpeed = 0.8 //Normally go about 80% of our fastest speed
+        telemetry.addData("seconds/loop", deltaTime)
 
         telemetry.addData("x", robotPose.position.x)
         telemetry.addData("y", robotPose.position.y)
         telemetry.addData("heading (deg)", Math.toDegrees(robotPose.heading.toDouble()))
-        telemetry.addData("raw", rawHeading.toDouble())
-        telemetry.addData("driverheading", driverHeading)
-        telemetry.addData("offset", headingOffset)
 
+        //update drive Pose
+        drive.updatePoseEstimate()
 
+        val driverHeading = 0       // all rotations/heading things in radians
+        val rawHeading = robotPose.heading
+        val sameHead = (rawHeading == lastHeading)
+        lastHeading = rawHeading
+        val heading: Rotation2d = Rotation2d.fromDouble(rawHeading.toDouble() - headingOffset - driverHeading)
+        val slowSpeed = 0.5 //Normally go about 80% of our fastest speed
+
+        /* driver 1 */
         packet.field().setRotation(Math.PI / 2)
         packet.fieldOverlay().setRotation(-Math.PI / 2)
         packet.fieldOverlay().setStroke("#3F51B5")
