@@ -5,13 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.Catapult
+import org.firstinspires.ftc.teamcode.subsystems.Pin
 
 @TeleOp
 class CatapultTesting : OpMode() {
     private lateinit var drive: MecanumDrive
     private lateinit var g1: PandaGamepad
     private lateinit var g2: PandaGamepad
-
+    private lateinit var pin: Pin
     private lateinit var catapult: Catapult
 
     private var runningActions: MutableList<Action> = ArrayList()
@@ -21,6 +22,7 @@ class CatapultTesting : OpMode() {
         g1 = PandaGamepad(gamepad1)
         g2 = PandaGamepad(gamepad2)
         catapult = Catapult(hardwareMap)
+        pin = Pin(hardwareMap)
     }
 
     override fun start() {
@@ -58,17 +60,23 @@ class CatapultTesting : OpMode() {
 
         telemetry.addData("seconds/loop", deltaTime)
 
+        if (g1.dpadRight.justPressed()) {
+            runningActions.add(pin.Locked())
+        }
+        if (g1.dpadLeft.justPressed()) {
+            runningActions.add(pin.Shoot())
+        }
         if (g1.a.justPressed()) {
-            runningActions.add(catapult.Light())//5 Rotations
+            runningActions.add(catapult.Light())
         }
         if (g1.x.justPressed()) {
-            runningActions.add(catapult.Medium())//6 Rotations
+            runningActions.add(catapult.Medium())
         }
         if (g1.y.justPressed()) {
-            runningActions.add(catapult.Heavy())//7 Rotations
+            runningActions.add(catapult.Heavy())
         }
         if (g1.b.justPressed()){
-            runningActions.add(catapult.SuperUltraPower())//7.5 Rotations
+            runningActions.add(catapult.SuperUltraPower())
         }
         if (g1.dpadDown.justPressed()) {
             runningActions.add(catapult.Release())

@@ -8,10 +8,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.LocationShare
 import org.firstinspires.ftc.teamcode.roadrunner.IHDrive
 import org.firstinspires.ftc.teamcode.subsystems.Collection
-import org.firstinspires.ftc.teamcode.subsystems.Ramp
+import org.firstinspires.ftc.teamcode.subsystems.Ramp_Decode
 import org.firstinspires.ftc.teamcode.subsystems.Shooter
 import org.firstinspires.ftc.teamcode.teleops.PandaTelemetryPacket
-import kotlin.math.PI
 
 
 @Autonomous
@@ -21,14 +20,14 @@ class ShootRedWall : OpMode() {
     val shootPose = Pose2d(-15.0,15.0,Math.toRadians(-140.0))
     lateinit var shooter: Shooter
     lateinit var drive: IHDrive
-    lateinit var ramp: Ramp
+    lateinit var ramp: Ramp_Decode
     lateinit var collection: Collection
     var finished = false
     lateinit var autoAction: Action
      override fun init() {
          shooter = Shooter(hardwareMap)
          drive = IHDrive(hardwareMap, beginPose)
-         ramp = Ramp(hardwareMap)
+         ramp = Ramp_Decode(hardwareMap)
          collection = Collection(hardwareMap)
 
          autoAction = SequentialAction(

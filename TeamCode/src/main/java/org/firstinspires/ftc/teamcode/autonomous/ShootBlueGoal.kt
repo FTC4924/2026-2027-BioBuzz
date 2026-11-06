@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode.autonomous
 import com.acmerobotics.roadrunner.Action
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.SequentialAction
-import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.LocationShare
 import org.firstinspires.ftc.teamcode.roadrunner.IHDrive
 import org.firstinspires.ftc.teamcode.subsystems.Collection
-import org.firstinspires.ftc.teamcode.subsystems.Ramp
+import org.firstinspires.ftc.teamcode.subsystems.Ramp_Decode
 import org.firstinspires.ftc.teamcode.subsystems.Shooter
 import org.firstinspires.ftc.teamcode.teleops.PandaTelemetryPacket
 
@@ -20,7 +19,7 @@ class ShootBlueGoal : OpMode() {
     val shootPose = Pose2d (-48.0,-15.0,Math.toRadians(-23.0))
     lateinit var shooter: Shooter
     lateinit var drive: IHDrive
-    lateinit var ramp: Ramp
+    lateinit var ramp: Ramp_Decode
     lateinit var collection: Collection
     var finished = false
     lateinit var autoAction: Action
@@ -28,7 +27,7 @@ class ShootBlueGoal : OpMode() {
     override fun init() {
         shooter = Shooter(hardwareMap)
         drive = IHDrive(hardwareMap, beginPose)
-        ramp = Ramp(hardwareMap)
+        ramp = Ramp_Decode(hardwareMap)
         collection = Collection(hardwareMap)
 
         autoAction = SequentialAction(

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.LocationShare
 import org.firstinspires.ftc.teamcode.roadrunner.IHDrive
 import org.firstinspires.ftc.teamcode.subsystems.Collection
-import org.firstinspires.ftc.teamcode.subsystems.Ramp
+import org.firstinspires.ftc.teamcode.subsystems.Ramp_Decode
 import org.firstinspires.ftc.teamcode.subsystems.Shooter
 import org.firstinspires.ftc.teamcode.teleops.PandaTelemetryPacket
 
@@ -20,14 +20,14 @@ class ShootBlueWall : OpMode() {
     val shootPose = Pose2d(-15.0,-15.0,-Math.PI/4)
     lateinit var shooter: Shooter
     lateinit var drive: IHDrive
-    lateinit var ramp: Ramp
+    lateinit var ramp: Ramp_Decode
     lateinit var collection: Collection
     var finished = false
     lateinit var autoAction: Action
      override fun init() {
          shooter = Shooter(hardwareMap)
          drive = IHDrive(hardwareMap, beginPose)
-         ramp = Ramp(hardwareMap)
+         ramp = Ramp_Decode(hardwareMap)
          collection = Collection(hardwareMap)
 
          autoAction = SequentialAction(
@@ -36,6 +36,7 @@ class ShootBlueWall : OpMode() {
                  .setTangent(-3 * Math.PI/4)
                  .splineToSplineHeading(
                      Pose2d(Vector2d(-15.0, -15.0), -Math.PI / 4),
+
                      Math.PI)
                  .build(),
              ramp.collect(),
