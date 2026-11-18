@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 class Collection(hardwareMap: HardwareMap) {
 
     enum class CollectionState(val power: Double) {
-        Forward(1.0),
-        Backward(-0.75),
+        Forward(.75),
+        Backward(-0.5),
         Stopped(0.0)
     }
 
@@ -35,11 +35,11 @@ class Collection(hardwareMap: HardwareMap) {
         override fun run(packet: TelemetryPacket): Boolean {
             if (!initialized) {     //! means not
                 collectionPower = state.power
+                collectServoLeft.power = collectionPower
+                collectServoRight.power = -collectionPower
 
                 if (!justServos) collectMotor.power = collectionPower
 
-                collectServoLeft.power = collectionPower
-                collectServoRight.power = -collectionPower
                 collectionState = state
                 initialized = true
             }

@@ -17,15 +17,16 @@ class Catapult(hardwareMap: HardwareMap) {
     enum class SpoolState(val position: Double) {
         //Number is in Rotations. Not degrees or ticks
         Released(0.0),
-        Light(6.0),
-        Medium(6.5),//Previous tested amount for 1 pollen and 1 nectar
-        Heavy(6.75),
-        SuperUltraPower (7.0),
+        Light(3.5),
+        Medium(4.0),//Previous tested amount for 1 pollen and 1 nectar
+        Heavy(4.5),
+        SuperUltraPower (5.0),
         Manual(-1.0)
     }
 
-    var spoolState = SpoolState.Released
+    var spoolState = SpoolState.Released       //start as released and keep track of current spool state.
 
+    // creating motor object
     val spool = hardwareMap.get(DcMotorEx::class.java, "spool")
 
     private val power = 0.75
@@ -33,8 +34,8 @@ class Catapult(hardwareMap: HardwareMap) {
     var targetPosition = 0.0    //When program/class is initialized, assume start at 0
 
     init {
-        spool.setCurrentAlert(4.5, CurrentUnit.AMPS)
-        spool.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+       // spool.setCurrentAlert(4.5, CurrentUnit.AMPS)
+        spool.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE //Whenever the motor is not moving hold position.
         spool.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         spool.targetPosition = 0
         spool.mode = DcMotor.RunMode.RUN_TO_POSITION
@@ -47,7 +48,8 @@ class Catapult(hardwareMap: HardwareMap) {
      *
      * @param state the state (and associated position) to set the arm to
      */
-    val TPR: Int = 1425 //Ticks per rotation of the motor
+    val TPR: Int = 1425 //Ticks per rotation of the motor //PPR on goBilda
+
     inner class SetState(private val state: SpoolState) : Action {
         private var initialized = false
 
@@ -85,9 +87,6 @@ class Catapult(hardwareMap: HardwareMap) {
         }
     }
 
-    /**
-     * zeros the ramp at the lowest position using current detection
-     */
 
     fun Medium(): Action = SetState(SpoolState.Medium)
     fun Heavy(): Action = SetState(SpoolState.Heavy)
@@ -96,8 +95,5 @@ class Catapult(hardwareMap: HardwareMap) {
     fun SuperUltraPower(): Action = SetState(SpoolState.SuperUltraPower)
     fun manual(input: Double): Action = Manual(input)
 
-    fun getPosition(): Int {
-        return spool.currentPosition
-    }
 }
 

@@ -13,6 +13,11 @@ import org.firstinspires.ftc.teamcode.roadrunner.Drawing
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.Collection
 import org.firstinspires.ftc.teamcode.subsystems.Collection.CollectionState
+import org.firstinspires.ftc.teamcode.subsystems.Pin
+import org.firstinspires.ftc.teamcode.subsystems.Transfer
+import org.firstinspires.ftc.teamcode.subsystems.Catapult
+import com.acmerobotics.roadrunner.SequentialAction
+import com.acmerobotics.roadrunner.SleepAction
 import kotlin.math.PI
 
 @TeleOp
@@ -22,6 +27,9 @@ class BiobuzzTeleop : OpMode() {
     private lateinit var g2: PandaGamepad
 
     private lateinit var collection: Collection
+    private lateinit var pin: Pin
+    private lateinit var transfer: Transfer
+    private lateinit var catapult: Catapult
 
     private var headingOffset: Double = 0.0
     private val dash: FtcDashboard = FtcDashboard.getInstance()
@@ -35,6 +43,9 @@ class BiobuzzTeleop : OpMode() {
         g1 = PandaGamepad(gamepad1)
         g2 = PandaGamepad(gamepad2)
         collection = Collection(hardwareMap)
+        pin = Pin(hardwareMap)
+        transfer = Transfer(hardwareMap)
+        catapult = Catapult(hardwareMap)
         lastHeading = drive.localizer.pose.heading
     }
 
@@ -83,7 +94,8 @@ class BiobuzzTeleop : OpMode() {
 
         val driverHeading = 0       // all rotations/heading things in radians
         val rawHeading = robotPose.heading
-        val heading: Rotation2d = Rotation2d.fromDouble(rawHeading.toDouble() - headingOffset - driverHeading)
+        val heading: Rotation2d =
+            Rotation2d.fromDouble(rawHeading.toDouble() - headingOffset - driverHeading)
         val slowSpeed = 0.5 //Normally go about 80% of our fastest speed
 
         /* driver 1 */
@@ -126,10 +138,71 @@ class BiobuzzTeleop : OpMode() {
         /* driver 2 */
 
         //  collection control, hold a button to turn on motor and servo, hold bumper to turn off motor
-        if (g2.a.isHeld()) collection.collectIn(g2.leftBumper.isHeld())
-        if (g2.y.isHeld()) collection.spitOut(g2.leftBumper.isHeld())
-        if (g2.a.isInactive() and g2.y.isInactive()) collection.stop()
-        if (g2.leftBumper.justPressed() and (collection.collectMotor.power != 0.0)) collection.stop()
+        if (g2.a.isHeld()) {
+            runningActions.add(collection.collectIn(g2.leftBumper.isHeld()))
+        }
+        if (g2.y.isHeld()) {
+            runningActions.add(collection.spitOut(g2.leftBumper.isHeld()))
+        }
+        if (g2.a.isInactive() and g2.y.isInactive()) {
+            runningActions.add(collection.stop())
+        }
+        if (g2.leftBumper.justPressed() and (collection.collectMotor.power != 0.0)) {
+            runningActions.add(collection.stop())
+        }
+
+        /*if (g1.dpadRight.justPressed()) {
+            runningActions.add(pin.Locked())
+        }
+        if (g1.dpadLeft.justPressed()) {
+            runningActions.add(pin.Shoot())
+        }*/
+
+        if (g2.b.justPressed()) { // pin will shoot, catapult will unwind, then pin will re-lock
+            runningActions.add(             //The function on g2.b is untested as of 11/17
+                SequentialAction(
+                    pin.Shoot(),
+                    SleepAction(1.0),
+                    catapult.Release(),
+                    SleepAction(2.0),
+                    pin.Locked(),
+
+                    )
+            )
+        }
+
+        if (g2.rightBumper.isHeld()) {
+            runningActions.add(transfer.loadBucket())
+        }
+        if (g2.rightBumper.justReleased()) {
+            runningActions.add(transfer.readyToCollect())
+        }
+
+        if (g2.dpadDown.justPressed()) {
+            runningActions.add(catapult.Light())
+        }
+        if (g2.dpadRight.justPressed()) {
+            runningActions.add(catapult.Medium())
+        }
+        if (g2.dpadUp.justPressed()) {
+            runningActions.add(catapult.Heavy())
+        }
+        if (g2.dpadLeft.justPressed()) {
+            runningActions.add(catapult.SuperUltraPower())
+        }
+        /*if (g2.b.justPressed()) {
+            runningActions.add(catapult.Release())
+        } */
+        if (g2.leftStickY.isActive()) {
+            runningActions.add(catapult.manual(g2.leftStickY.component * deltaTime))
+            // The "deltaTime" is needed above to stop the motor after you let go of triggers
+        }
+
+        if (g2.leftTrigger.isActive() or g2.rightTrigger.isActive()){
+            runningActions.add(
+                transfer.manual(g2.leftTrigger.component, g2.rightTrigger.component)
+            )
+        }
 
     }
 

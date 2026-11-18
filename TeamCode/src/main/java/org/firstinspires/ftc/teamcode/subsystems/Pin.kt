@@ -12,9 +12,9 @@ class Pin(hardwareMap: HardwareMap) {
      * know the position of the scoringArm
      */
     enum class PinPosition(val position: Double) {
-        Locked(1.0),
-        Shoot(0.0),
-
+        //WARNING!!!! PLEASE When using actuonix linear servos minum is o.25 and max is .75 NOT 0 and 1
+        Locked(0.50),
+        Shoot(0.40),
     }
 
 
